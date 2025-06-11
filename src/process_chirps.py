@@ -42,28 +42,14 @@ import xarray as xr
 import rioxarray
 
 def save_chirps_day_as_tif(nc_file_path, band_index, output_tif_path):
-    """
-    Extracts a specific day (band) from CHIRPS .nc file and saves as a single-band GeoTIFF.
-
-    Parameters:
-        nc_file_path (str): Path to CHIRPS NetCDF file
-        band_index (int): Zero-based index of the day (0 = Jan 1)
-        output_tif_path (str): Output path for the GeoTIFF
-    """
-    # Load dataset
     ds = xr.open_dataset(nc_file_path)
 
-    # Access precipitation variable
     precip = ds['precip']
-
-    # Set spatial dimensions and CRS
     precip.rio.set_spatial_dims(x_dim="longitude", y_dim="latitude", inplace=True)
     precip.rio.write_crs("EPSG:4326", inplace=True)
 
-    # Select specific band (e.g., day)
     precip_day = precip.isel(time=band_index)
 
-    # Save to GeoTIFF
     precip_day.rio.to_raster(output_tif_path)
 
     print(f"Saved: {output_tif_path}")
