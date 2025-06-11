@@ -1,0 +1,1 @@
+stores chirps data in .nc format
